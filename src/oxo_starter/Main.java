@@ -34,22 +34,27 @@ public class Main extends JFrame {
 	public static void main(String[] args) {
 		final GameModel mGameModel;
 		mGameModel = new GameModel();
-		for (int i = 0; i < args.length; i++){
-			if (args[i].equals("t")){
-				(new Thread(new TextView(mGameModel))).start();
+		if (args.length > 0) {
+			for (int i = 0; i < args.length; i++) {
+				if (args[i].equals("t")) {
+					(new Thread(new TextView(mGameModel))).start();
+				} else if (args[i].equals("f")) {
+					//Converting the above two lines into one line: let's use small trick NetBeans IDE does
+					//by default when creating a Swing app - Schedule a job for the event dispatch thread.
+					//This should make application safer from the perspective of multithreading too.
+					javax.swing.SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							FrameView.createAndShowGUI(mGameModel);
+						}
+					});
+				}
 			}
-			else if (args[i].equals("f")){
-				//Converting the above two lines into one line: let's use small trick NetBeans IDE does 
-				//by default when creating a Swing app - Schedule a job for the event dispatch thread.
-				//This should make application safer from the perspective of multithreading too.
-		        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-		            public void run() {
-		                FrameView.createAndShowGUI(mGameModel);
-		            }
-		        });
-			}
-
+		} else {
+			javax.swing.SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					FrameView.createAndShowGUI(mGameModel);
+				}
+			});
 		}
 	}
-
 }
